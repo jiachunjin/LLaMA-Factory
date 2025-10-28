@@ -12,7 +12,7 @@
     "file_name": "sft_gemini_flash_2047.jsonl",
     "columns": {
       "prompt": "input",
-      "output": "response"
+      "output": "output"
     }
   },
   "glaive_toolcall_en_demo": {
