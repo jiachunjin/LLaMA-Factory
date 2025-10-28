@@ -35,5 +35,8 @@ accelerate launch \
     --warmup_ratio 0.1 \
     --bf16 True \
     --tf32 True \
-    --val_size 20 \
+    --val_size 64 \
+    --per_device_eval_batch_size 8 \
+    --eval_strategy steps \
+    --eval_steps 40 \
     --output_dir /data/phd/jinjiachun/experiment/sft_qwenvl/$VERSION \
