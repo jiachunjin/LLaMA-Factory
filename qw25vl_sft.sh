@@ -11,7 +11,7 @@ accelerate launch \
     --config_file single_config_8.yaml \
     --main_process_port 29501 \
     src/train.py \
-    --model_name_or_path /data/phd/jinjiachun/ckpt/Qwen/Qwen-Image/text_encoder \
+    --model_name_or_path /data/phd/jinjiachun/ckpt/Qwen/Qwen2.5-VL-7B-Instruct \
     --upcast_layernorm true \
     --stage sft \
     --do_train true \
