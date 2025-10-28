@@ -8,7 +8,7 @@ export http_proxy=http://oversea-squid4.sgp.txyun:11080 https_proxy=http://overs
 export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
 
 accelerate launch \
-    --config_file /data/kousiqi/nips/LLaMA-Factory/examples/accelerate/fsdp_config_8.yaml \
+    --config_file single_config_8.yaml \
     --main_process_port 29501 \
     src/train.py \
     --model_name_or_path /data/phd/jinjiachun/ckpt/Qwen/Qwen-Image/text_encoder \
