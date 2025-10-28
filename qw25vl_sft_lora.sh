@@ -1,6 +1,6 @@
 #!/bin/bash
 # +
-VERSION="gemini_flash_2047"
+VERSION="gemini_flash_2047_lora"
 
 export http_proxy=http://oversea-squid4.sgp.txyun:11080 https_proxy=http://oversea-squid4.sgp.txyun:11080 no_proxy=localhost,127.0.0.1,localaddress,localdomain.com,internal,corp.kuaishou.com,test.gifshow.com,staging.kuaishou.com
 # export LD_LIBRARY_PATH=/usr/local/cuda-12.4/lib64:$LD_LIBRARY_PATH
@@ -31,7 +31,7 @@ accelerate launch \
     --per_device_train_batch_size 8 \
     --gradient_accumulation_steps 1 \
     --learning_rate 1e-5 \
-    --num_train_epochs 5 \
+    --num_train_epochs 3 \
     --lr_scheduler_type cosine \
     --warmup_ratio 0.1 \
     --bf16 True \
@@ -39,5 +39,5 @@ accelerate launch \
     --val_size 64 \
     --per_device_eval_batch_size 8 \
     --eval_strategy steps \
-    --eval_steps 1 \
+    --eval_steps 5 \
     --output_dir /data/phd/jinjiachun/experiment/sft_qwenvl/$VERSION \
