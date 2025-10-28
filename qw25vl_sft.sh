@@ -15,7 +15,8 @@ accelerate launch \
     --upcast_layernorm true \
     --stage sft \
     --do_train true \
-    --finetuning_type full \
+    --finetuning_type lora \
+    --lora_target q_proj,k_proj,v_proj,o_proj \
     --dataset sft_gemini_flash_2047 \
     --template qwen2_vl \
     --cutoff_len 16384 \
@@ -38,5 +39,5 @@ accelerate launch \
     --val_size 64 \
     --per_device_eval_batch_size 8 \
     --eval_strategy steps \
-    --eval_steps 40 \
+    --eval_steps 1 \
     --output_dir /data/phd/jinjiachun/experiment/sft_qwenvl/$VERSION \
