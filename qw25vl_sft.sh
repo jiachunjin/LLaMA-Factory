@@ -8,7 +8,6 @@ export http_proxy=http://oversea-squid4.sgp.txyun:11080 https_proxy=http://overs
 export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
 
 accelerate launch \
-    # --config_file single_config_8.yaml \
     --main_process_port 29501 \
     src/train.py \
     --deepspeed examples/deepspeed/ds_z3_config.json \
