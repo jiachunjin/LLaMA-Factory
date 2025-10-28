@@ -23,7 +23,7 @@ accelerate launch \
     --overwrite_cache true \
     --preprocessing_num_workers 16 \
     --logging_steps 10 \
-    --save_steps 64 \
+    --save_steps 40 \
     --save_total_limit 1 \
     --plot_loss true \
     --overwrite_output_dir true \
