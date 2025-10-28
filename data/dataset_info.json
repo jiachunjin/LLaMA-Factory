@@ -8,6 +8,13 @@
   "alpaca_zh_demo": {
     "file_name": "alpaca_zh_demo.json"
   },
+  "sft_gemini_flash_2047": {
+    "file_name": "data/sft_gemini_flash_2047.jsonl",
+    "columns": {
+      "prompt": "input",
+      "output": "response"
+    }
+  },
   "glaive_toolcall_en_demo": {
     "file_name": "glaive_toolcall_en_demo.json",
     "formatting": "sharegpt",
