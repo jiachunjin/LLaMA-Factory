@@ -36,7 +36,9 @@ if TYPE_CHECKING:
 
 logger = get_logger(__name__)
 
+import os
 import torch
+import transformers
 from transformers import Qwen2_5_VLForConditionalGeneration
 
 def run_sft(
@@ -47,16 +49,42 @@ def run_sft(
     generating_args: "GeneratingArguments",
     callbacks: Optional[list["TrainerCallback"]] = None,
 ):
-    local_model_path = "/data/phd/kousiqi/yugang/Qwen2.5-VL-7B-Instruct"
-    anchor_model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
-        local_model_path,
-        torch_dtype=torch.bfloat16,  # or torch.float16, match your training dtype
-        trust_remote_code=True,
-        device_map="auto",  # ✅ 关键：自动分配到 GPU
-    )
-    anchor_model.eval()
-    for param in anchor_model.parameters():
-        param.requires_grad = False
+    _orig_env = os.environ.get("DEEPSPEED_ZERO3_INIT", None)
+    if "DEEPSPEED_ZERO3_INIT" in os.environ:
+        del os.environ["DEEPSPEED_ZERO3_INIT"]
+
+    _orig_is_zero3 = transformers.modeling_utils.is_deepspeed_zero3_enabled
+    transformers.modeling_utils.is_deepspeed_zero3_enabled = lambda: False
+
+    try:
+        # === Step 2: Load anchor model ON GPU (not CPU!) ===
+        local_model_path = "/data/phd/kousiqi/yugang/Qwen2.5-VL-7B-Instruct"
+        anchor_model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
+            local_model_path,
+            torch_dtype=torch.bfloat16,  # or torch.float16, match your training dtype
+            trust_remote_code=True,
+            device_map="auto",  # ✅ 关键：自动分配到 GPU
+            # 或 device_map={"": "cuda:0"} 如果单卡
+        )
+        anchor_model.eval()
+        for param in anchor_model.parameters():
+            param.requires_grad = False
+        # Optional: move to same device as main model later if needed, but "auto" should handle it
+    finally:
+        # === Step 3: Restore DeepSpeed state ===
+        if _orig_env is not None:
+            os.environ["DEEPSPEED_ZERO3_INIT"] = _orig_env
+        transformers.modeling_utils.is_deepspeed_zero3_enabled = _orig_is_zero3
+    # local_model_path = "/data/phd/kousiqi/yugang/Qwen2.5-VL-7B-Instruct"
+    # anchor_model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
+    #     local_model_path,
+    #     torch_dtype=torch.bfloat16,  # or torch.float16, match your training dtype
+    #     trust_remote_code=True,
+    #     device_map="auto",  # ✅ 关键：自动分配到 GPU
+    # )
+    # anchor_model.eval()
+    # for param in anchor_model.parameters():
+    #     param.requires_grad = False
 
     tokenizer_module = load_tokenizer(model_args)
     tokenizer = tokenizer_module["tokenizer"]
