@@ -36,6 +36,8 @@ if TYPE_CHECKING:
 
 logger = get_logger(__name__)
 
+import torch
+from transformers import Qwen2_5_VLForConditionalGeneration
 
 def run_sft(
     model_args: "ModelArguments",
@@ -45,6 +47,17 @@ def run_sft(
     generating_args: "GeneratingArguments",
     callbacks: Optional[list["TrainerCallback"]] = None,
 ):
+    local_model_path = "/data/phd/kousiqi/yugang/Qwen2.5-VL-7B-Instruct"
+    anchor_model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
+        local_model_path,
+        torch_dtype=torch.bfloat16,  # or torch.float16, match your training dtype
+        trust_remote_code=True,
+        device_map="auto",  # ✅ 关键：自动分配到 GPU
+    )
+    anchor_model.eval()
+    for param in anchor_model.parameters():
+        param.requires_grad = False
+
     tokenizer_module = load_tokenizer(model_args)
     tokenizer = tokenizer_module["tokenizer"]
     template = get_template_and_fix_tokenizer(tokenizer, data_args)
@@ -80,6 +93,7 @@ def run_sft(
 
     # Initialize our Trainer
     trainer = CustomSeq2SeqTrainer(
+        anchor_model=anchor_model,
         model=model,
         args=training_args,
         finetuning_args=finetuning_args,

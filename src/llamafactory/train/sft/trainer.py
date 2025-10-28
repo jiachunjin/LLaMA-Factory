@@ -49,12 +49,14 @@ class CustomSeq2SeqTrainer(Seq2SeqTrainer):
 
     def __init__(
         self,
+        anchor_model,
         finetuning_args: "FinetuningArguments",
         processor: Optional["ProcessorMixin"],
         model_args: Optional["ModelArguments"] = None,
         gen_kwargs: Optional[dict[str, Any]] = None,
         **kwargs,
     ) -> None:
+        self.anchor_model = anchor_model
         # Configure FP8 environment if enabled
         if model_args is not None and model_args.fp8:
             configure_fp8_environment(model_args)
@@ -112,9 +114,39 @@ class CustomSeq2SeqTrainer(Seq2SeqTrainer):
 
         return super()._get_train_sampler(*args, **kwargs)
 
-    @override
+    # @override
+    # def compute_loss(self, model, inputs, *args, **kwargs):
+    #     return super().compute_loss(model, inputs, *args, **kwargs)
     def compute_loss(self, model, inputs, *args, **kwargs):
-        return super().compute_loss(model, inputs, *args, **kwargs)
+        self.anchor_model.eval()
+        with torch.no_grad():
+            
+            anchor_outputs = self.anchor_model(
+                input_ids=inputs["input_ids"],
+                attention_mask=inputs["attention_mask"],
+                pixel_values=inputs.get("pixel_values"),
+                image_grid_thw=inputs.get("image_grid_thw"),
+                output_hidden_states=True
+            )
+            h_orig = anchor_outputs.hidden_states[-1].detach()  # already on GPU
+    
+        outputs = model(
+            input_ids=inputs["input_ids"],
+            attention_mask=inputs["attention_mask"],
+            labels=inputs["labels"],
+            pixel_values=inputs.get("pixel_values"),
+            image_grid_thw=inputs.get("image_grid_thw"),
+            output_hidden_states=True
+        )
+        h_finetune = outputs.hidden_states[-1]
+    
+        
+        proximal_loss = torch.nn.functional.mse_loss(h_finetune.float(), h_orig.float())
+        rewrite_loss = outputs.loss
+    
+        total_loss = rewrite_loss + 0.5 * proximal_loss
+        return total_loss
+
 
     @override
     def prediction_step(
