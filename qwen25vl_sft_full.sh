@@ -1,6 +1,6 @@
 #!/bin/bash
 # +
-VERSION="gemini_flash_2047_full"
+VERSION="gemini_flash_2047_full_proximal0.5"
 
 export http_proxy=http://oversea-squid4.sgp.txyun:11080 https_proxy=http://oversea-squid4.sgp.txyun:11080 no_proxy=localhost,127.0.0.1,localaddress,localdomain.com,internal,corp.kuaishou.com,test.gifshow.com,staging.kuaishou.com
 # export LD_LIBRARY_PATH=/usr/local/cuda-12.4/lib64:$LD_LIBRARY_PATH
