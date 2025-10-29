@@ -29,8 +29,8 @@ accelerate launch \
     --overwrite_output_dir true \
     --per_device_train_batch_size 8 \
     --gradient_accumulation_steps 1 \
-    --learning_rate 1e-5 \
-    --num_train_epochs 3 \
+    --learning_rate 5e-6 \
+    --num_train_epochs 2 \
     --lr_scheduler_type cosine \
     --warmup_ratio 0.1 \
     --bf16 True \
