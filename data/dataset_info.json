@@ -15,8 +15,8 @@
       "response": "output"
     }
   },
-  "1029_revised_sft": {
-    "file_name": "1029_revised_sft.jsonl",
+  "sft_gemini_flash_2553": {
+    "file_name": "sft_gemini_flash_2553.jsonl",
     "columns": {
       "prompt": "input",
       "response": "output"

@@ -16,7 +16,7 @@ accelerate launch \
     --stage sft \
     --do_train true \
     --finetuning_type full \
-    --dataset 1029_revised_sft \
+    --dataset sft_gemini_flash_2553 \
     --template qwen2_vl \
     --cutoff_len 16384 \
     --max_samples 1000000 \
