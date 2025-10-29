@@ -15,6 +15,13 @@
       "response": "output"
     }
   },
+  "1029_revised_sft": {
+    "file_name": "1029_revised_sft.jsonl",
+    "columns": {
+      "prompt": "input",
+      "response": "output"
+    }
+  },
   "glaive_toolcall_en_demo": {
     "file_name": "glaive_toolcall_en_demo.json",
     "formatting": "sharegpt",

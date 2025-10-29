@@ -16,7 +16,7 @@ accelerate launch \
     --stage sft \
     --do_train true \
     --finetuning_type full \
-    --dataset sft_gemini_flash_2047 \
+    --dataset 1029_revised_sft \
     --template qwen2_vl \
     --cutoff_len 16384 \
     --max_samples 1000000 \
@@ -39,4 +39,4 @@ accelerate launch \
     --per_device_eval_batch_size 8 \
     --eval_strategy steps \
     --eval_steps 5 \
-    --output_dir /data/phd/jinjiachun/experiment/sft_qwenvl/$VERSION \
+    --output_dir /data/phd/jinjiachun/experiment/sft_qwenvl/$VERSION
